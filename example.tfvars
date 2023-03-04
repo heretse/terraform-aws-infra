@@ -1,0 +1,6 @@
+aws_region="ap-northeast-1"
+aws_profile="heretse"
+project_name="example"
+department_name="SRE"
+environment="develop"
+ssh_key_name="my-ssh-key"

@@ -1,4 +1,4 @@
-resource "aws_route_table" "nxd_public_rtb" {
+resource "aws_route_table" "my_public_rtb" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = var.igw_id
@@ -24,7 +24,7 @@ resource "aws_route_table" "nxd_public_rtb" {
   ]
 }
 
-resource "aws_route_table" "nxd_application_rtb" {
+resource "aws_route_table" "my_application_rtb" {
   route {
     cidr_block           = "0.0.0.0/0"
     network_interface_id = var.nat_server_eip_assoc_eni_id
@@ -50,7 +50,7 @@ resource "aws_route_table" "nxd_application_rtb" {
   ]
 }
 
-resource "aws_route_table" "nxd_intra_rtb" {
+resource "aws_route_table" "my_intra_rtb" {
   route {
     cidr_block           = "0.0.0.0/0"
     network_interface_id = var.nat_server_eip_assoc_eni_id
@@ -76,7 +76,7 @@ resource "aws_route_table" "nxd_intra_rtb" {
   ]
 }
 
-resource "aws_route_table" "nxd_persistence_rtb" {
+resource "aws_route_table" "my_persistence_rtb" {
   route {
     cidr_block           = "0.0.0.0/0"
     network_interface_id = var.nat_server_eip_assoc_eni_id
@@ -102,7 +102,7 @@ resource "aws_route_table" "nxd_persistence_rtb" {
   ]
 }
 
-resource "aws_route_table" "nxd_nat_server_rtb" {
+resource "aws_route_table" "my_nat_server_rtb" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = var.igw_id

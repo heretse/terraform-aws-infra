@@ -2,7 +2,7 @@ data "local_file" "configure_nat" {
   filename = "${path.module}/configure_nat.sh"
 }
 
-resource "aws_instance" "bastion_instance" {
+resource "aws_instance" "my_bastion_instance" {
   # checkov:skip=CKV2_AWS_41: need to add iam role later
   ami                    = (var.ami_id != null) ? var.ami_id : data.aws_ami.ami.id
   instance_type          = var.instance_type
@@ -17,7 +17,7 @@ resource "aws_instance" "bastion_instance" {
   }
 }
 
-resource "aws_instance" "nat_server_instance" {
+resource "aws_instance" "my_nat_server_instance" {
   # checkov:skip=CKV2_AWS_41: need to add iam role later
   ami                    = (var.ami_id != null) ? var.ami_id : data.aws_ami.ami.id
   instance_type          = var.instance_type

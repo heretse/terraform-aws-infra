@@ -19,9 +19,9 @@ variable "project_name" {
 }
 
 variable "department_name" {
-  type    = string
+  type        = string
   description = "Department name"
-  default = "SRE"
+  default     = "SRE"
 }
 
 variable "environment" {

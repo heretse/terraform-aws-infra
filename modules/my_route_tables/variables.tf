@@ -20,82 +20,57 @@ variable "department_name" {
   default     = "SRE"
 }
 
-variable "igw_id" {
-  type    = string
-  default = ""
-}
-
 variable "vpc_id" {
   type    = string
   default = ""
 }
 
-variable "subnet_public_a_id" {
-  type    = string
-  default = ""
+variable "public_subnet_ids" {
+  type    = list(string)
+  default = []
 }
 
-variable "subnet_public_c_id" {
-  type    = string
-  default = ""
+variable "application_subnet_ids" {
+  type    = list(string)
+  default = []
 }
 
-variable "subnet_public_d_id" {
-  type    = string
-  default = ""
+variable "intra_subnet_ids" {
+  type    = list(string)
+  default = []
 }
 
-variable "subnet_application_a_id" {
-  type    = string
-  default = ""
+variable "persistence_subnet_ids" {
+  type    = list(string)
+  default = []
 }
 
-variable "subnet_application_c_id" {
-  type    = string
-  default = ""
+variable "nat_server_subnet_ids" {
+  type    = list(string)
+  default = []
 }
 
-variable "subnet_application_d_id" {
-  type    = string
-  default = ""
+variable "public_routes" {
+  type    = list(any)
+  default = []
 }
 
-variable "subnet_intra_a_id" {
-  type    = string
-  default = ""
+variable "application_routes" {
+  type    = list(any)
+  default = []
 }
 
-variable "subnet_intra_c_id" {
-  type    = string
-  default = ""
+variable "intra_routes" {
+  type    = list(any)
+  default = []
 }
 
-variable "subnet_intra_d_id" {
-  type    = string
-  default = ""
+variable "persistence_routes" {
+  type    = list(any)
+  default = []
 }
 
-variable "subnet_persistence_a_id" {
-  type    = string
-  default = ""
-}
-
-variable "subnet_persistence_c_id" {
-  type    = string
-  default = ""
-}
-
-variable "subnet_persistence_d_id" {
-  type    = string
-  default = ""
-}
-
-variable "subnet_nat_server_id" {
-  type    = string
-  default = ""
-}
-
-variable "nat_server_eip_assoc_eni_id" {
-  type    = string
-  default = ""
+variable "nat_server_routes" {
+  type    = list(any)
+  default = []
 }

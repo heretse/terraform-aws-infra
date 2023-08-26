@@ -30,14 +30,14 @@ variable "ssh_key_name" {
   default = ""
 }
 
-variable "bastion_security_group_id" {
-  type    = string
-  default = ""
+variable "bastion_security_group_ids" {
+  type    = list(string)
+  default = []
 }
 
-variable "nat_server_security_group_id" {
-  type    = string
-  default = ""
+variable "nat_server_security_group_ids" {
+  type    = list(string)
+  default = []
 }
 
 variable "subnet_bastion_id" {
@@ -50,9 +50,9 @@ variable "subnet_nat_server_id" {
   default = ""
 }
 
-variable "subnet_postgresql_proxy_id" {
-  type    = string
-  default = ""
+variable "create_nat_server_instance" {
+  type    = bool
+  default = true
 }
 
 variable "create_postgresql_proxy_profile" {
@@ -60,7 +60,30 @@ variable "create_postgresql_proxy_profile" {
   default = true
 }
 
-variable "ami_id" {
+variable "bastion_ami_id" {
   type    = string
+  default = null
+}
+
+variable "nat_server_ami_id" {
+  type    = string
+  default = null
+}
+variable "bastion_user_data" {
+  type    = string
+  default = null
+}
+
+variable "bastion_launch_template" {
+  type    = map(any)
+  default = null
+}
+
+variable "bastion_ami" {
+  type = map(any)
+}
+
+variable "nat_server_launch_template" {
+  type    = map(any)
   default = null
 }

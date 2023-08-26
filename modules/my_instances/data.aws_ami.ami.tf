@@ -18,3 +18,14 @@ data "aws_ami" "ami" {
 
   owners = ["amazon"]
 }
+
+data "aws_ami" "bastion_ami" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = var.bastion_ami["filter"]
+  }
+
+  owners = var.bastion_ami["owners"]
+}

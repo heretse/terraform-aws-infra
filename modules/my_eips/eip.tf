@@ -1,4 +1,4 @@
-resource "aws_eip" "nxd_bastion_eip" {
+resource "aws_eip" "my_bastion_eip" {
   network_border_group = var.aws_region
   public_ipv4_pool     = "amazon"
 
@@ -17,7 +17,7 @@ resource "aws_eip" "nxd_bastion_eip" {
   vpc = "true"
 }
 
-resource "aws_eip" "nxd_nat_server_eip" {
+resource "aws_eip" "my_nat_server_eip" {
   network_border_group = var.aws_region
   public_ipv4_pool     = "amazon"
 

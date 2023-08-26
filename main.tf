@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      version = "4.55.0"
+      version = "4.62.0"
     }
   }
 
@@ -158,16 +158,27 @@ module "instances" {
   # checkov:skip=CKV_AWS_79:do it later
   # checkov:skip=CKV_AWS_126:don't enable detail monitor in sandbox env
 
-  aws_profile                        = var.aws_profile
-  aws_region                         = var.aws_region
-  department_name                    = var.department_name
-  project_name                       = var.project_name
-  subnet_bastion_id                  = module.subnet.subnets["my-public-ap-northeast-1a"].id
-  subnet_nat_server_id               = module.subnet.subnets["my-nat-server"].id
-  subnet_postgresql_proxy_id         = module.subnet.subnets["my-application-ap-northeast-1d"].id
-  bastion_security_group_id          = aws_security_group.nxd_bastion_sg.id
-  nat_server_security_group_id       = aws_security_group.nxd_nat_server_sg.id
-  ssh_key_name                       = var.ssh_key_name
+  aws_profile                   = var.aws_profile
+  aws_region                    = var.aws_region
+  department_name               = var.department_name
+  project_name                  = var.project_name
+  instance_type                 = "t3a.small"
+  subnet_bastion_id             = module.subnet.subnets["my-public-ap-northeast-1d"].id
+  subnet_nat_server_id          = module.subnet.subnets["my-nat-server"].id
+  bastion_security_group_ids    = [aws_security_group.nxd_bastion_sg.id]
+  nat_server_security_group_ids = [aws_security_group.nxd_nat_server_sg.id]
+  ssh_key_name                  = var.ssh_key_name
+  bastion_ami                   = local.bastion_ami
+  bastion_ami_id                = null
+  nat_server_ami_id             = null
+  create_nat_server_instance    = true
+  bastion_launch_template       = null
+  bastion_user_data             = <<HERE
+#!/bin/bash
+
+echo "Do something you want here."
+
+HERE
 
   source = "./modules/my_instances"
 }
@@ -190,24 +201,74 @@ module "rtb" {
   aws_region      = var.aws_region
   department_name = var.department_name
   project_name    = var.project_name
-  igw_id          = module.igw.igw_id
   vpc_id          = module.vpc.vpc_name["my-vpc"].id
 
-  subnet_public_a_id      = module.subnet.subnets["my-public-ap-northeast-1a"].id
-  subnet_public_c_id      = module.subnet.subnets["my-public-ap-northeast-1c"].id
-  subnet_public_d_id      = module.subnet.subnets["my-public-ap-northeast-1d"].id
-  subnet_application_a_id = module.subnet.subnets["my-application-ap-northeast-1a"].id
-  subnet_application_c_id = module.subnet.subnets["my-application-ap-northeast-1c"].id
-  subnet_application_d_id = module.subnet.subnets["my-application-ap-northeast-1d"].id
-  subnet_intra_a_id       = module.subnet.subnets["my-intra-ap-northeast-1a"].id
-  subnet_intra_c_id       = module.subnet.subnets["my-intra-ap-northeast-1c"].id
-  subnet_intra_d_id       = module.subnet.subnets["my-intra-ap-northeast-1d"].id
-  subnet_persistence_a_id = module.subnet.subnets["my-persistence-ap-northeast-1a"].id
-  subnet_persistence_c_id = module.subnet.subnets["my-persistence-ap-northeast-1c"].id
-  subnet_persistence_d_id = module.subnet.subnets["my-persistence-ap-northeast-1d"].id
-  subnet_nat_server_id    = module.subnet.subnets["my-nat-server"].id
+  public_subnet_ids = [
+    module.subnet.subnets["my-public-ap-northeast-1a"].id,
+    module.subnet.subnets["my-public-ap-northeast-1c"].id,
+    module.subnet.subnets["my-public-ap-northeast-1d"].id
+  ]
 
-  nat_server_eip_assoc_eni_id = module.eip.nat_server_eip_assoc_eni_id
+  application_subnet_ids = [
+    module.subnet.subnets["my-application-ap-northeast-1a"].id,
+    module.subnet.subnets["my-application-ap-northeast-1c"].id,
+    module.subnet.subnets["my-application-ap-northeast-1d"].id
+  ]
+
+  intra_subnet_ids = [
+    module.subnet.subnets["my-intra-ap-northeast-1a"].id,
+    module.subnet.subnets["my-intra-ap-northeast-1c"].id,
+    module.subnet.subnets["my-intra-ap-northeast-1d"].id
+  ]
+
+  persistence_subnet_ids = [
+    module.subnet.subnets["my-persistence-ap-northeast-1a"].id,
+    module.subnet.subnets["my-persistence-ap-northeast-1c"].id,
+    module.subnet.subnets["my-persistence-ap-northeast-1d"].id
+  ]
+
+  nat_server_subnet_ids = [
+    module.subnet.subnets["my-nat-server"].id
+  ]
+
+  public_routes = [
+    {
+      cidr_block = "0.0.0.0/0",
+      gateway_id = module.igw.igw_id
+    },
+    {
+      gateway_id      = module.igw.igw_id,
+      ipv6_cidr_block = "::/0"
+    }
+  ]
+
+  application_routes = [
+    {
+      cidr_block           = "0.0.0.0/0",
+      network_interface_id = module.eip.nat_server_eip_assoc_eni_id
+    }
+  ]
+
+  intra_routes = [
+    {
+      cidr_block           = "0.0.0.0/0",
+      network_interface_id = module.eip.nat_server_eip_assoc_eni_id
+    }
+  ]
+
+  persistence_routes = [
+    {
+      cidr_block           = "0.0.0.0/0",
+      network_interface_id = module.eip.nat_server_eip_assoc_eni_id
+    }
+  ]
+
+  nat_server_routes = [
+    {
+      cidr_block = "0.0.0.0/0"
+      gateway_id = module.igw.igw_id
+    }
+  ]
 
   source = "./modules/my_route_tables"
 }

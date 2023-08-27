@@ -1,5 +1,5 @@
 aws_region="ap-northeast-1"
-aws_profile="heretse"
+aws_profile="your-profile"
 project_name="example"
 department_name="SRE"
 environment="develop"

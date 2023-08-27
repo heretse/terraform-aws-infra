@@ -34,3 +34,6 @@ override.tf.json
 
 # Plan file
 .plan
+
+# Plan Graph file
+*.tfgraph

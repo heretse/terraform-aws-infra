@@ -1,0 +1,37 @@
+# Define Policy
+policies: []
+
+# Define user, bind user group and attch existing policy
+users: []
+
+# Define user group, attch inline and existing policies
+groups: []
+
+# Define role, attch inline and existing policies
+roles:
+  - name: eks-cluster
+    description: "EKS cluster role"
+    assume_role_policy_json_file: ./configs/iam/assume_role_policies/eks-cluster.json
+    policy_arns:
+      - "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+      - "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+    tag_name: "EKS cluster role"
+    path: "/"
+  - name: eks-node-group
+    description: "EKS node group"
+    assume_role_policy_json_file: ./configs/iam/assume_role_policies/eks-node-group.json
+    policy_arns:
+      - "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      - "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    tag_name: "EKS node group"
+    path: "/"
+  - name: eks-fargate-pod-execution-role
+    description: "EKS fargate pod execution role"
+    assume_role_policy_json_file: ./configs/iam/assume_role_policies/eks-fargate-pod-execution-role.json
+    policy_arns:
+      - "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+    tag_name: "EKS fargate pod execution role"
+    path: "/"
+
+instance_profiles: []

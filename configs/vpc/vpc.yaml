@@ -1,4 +1,4 @@
 vpcs:
   - vpc_name: my-vpc
     vpc_cidr: 10.2.0.0/16
-    project: example
+    # project: example

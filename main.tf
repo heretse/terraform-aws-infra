@@ -272,3 +272,70 @@ module "rtb" {
 
   source = "./modules/my_route_tables"
 }
+
+# iam
+module "iam" {
+  aws_profile     = var.aws_profile
+  aws_region      = var.aws_region
+  department_name = var.department_name
+  project_name    = var.project_name
+  iam_path        = "./configs/iam/iam.yaml"
+
+  source = "./modules/my_iam"
+}
+
+# eks
+module "eks" {
+  cluster_name     = "My-EKS-Cluster"
+  cluster_role_arn = module.iam.iam_role_arn["eks-cluster"].arn
+
+  public_subnets   = [
+    module.subnet.subnets["my-public-ap-northeast-1a"].id,
+    module.subnet.subnets["my-public-ap-northeast-1c"].id,
+    module.subnet.subnets["my-public-ap-northeast-1d"].id
+  ]
+
+  private_subnets = [
+    module.subnet.subnets["my-application-ap-northeast-1a"].id,
+    module.subnet.subnets["my-application-ap-northeast-1c"].id,
+    module.subnet.subnets["my-application-ap-northeast-1d"].id
+  ]
+
+  eks_version = "1.25"
+
+  node_groups = [
+    {
+      name           = "ng-spot",
+      node_role_arn  = module.iam.iam_role_arn["eks-node-group"].arn,
+      capacity_type  = "SPOT" # ON_DEMAND or SPOT
+      instance_types = ["t3a.xlarge"]
+      disk_size      = 20
+      desired_nodes  = 1,
+      max_nodes      = 1,
+      min_nodes      = 1
+    }
+  ]
+
+  fargate_profiles = [
+    {
+      name                   = "karpenter",
+      namespace              = "karpenter",
+      pod_execution_role_arn = module.iam.iam_role_arn["eks-fargate-pod-execution-role"].arn
+    }
+  ]
+
+  source = "./modules/my_eks"
+}
+
+# aws_load_balancer_controller
+module "aws_load_balancer_controller" {
+  aws_region            = var.aws_region
+  vpc_id                = module.vpc.vpc_name["my-vpc"].id
+  vpc_cidr              = module.vpc.vpc_name["my-vpc"].cidr_block
+  eks_cluster_name      = module.eks.cluster_name
+  eks_cluster_endpoint  = module.eks.endpoint
+  eks_oidc_url          = module.eks.oidc_url
+  eks_ca_certificate    = module.eks.ca_certificate
+
+  source                = "./modules/my_aws_load_balancer_controller"
+}

@@ -42,4 +42,4 @@ subnets:
 # nat
 - cidr: 10.2.3.0/24
   name: my-nat-server
-  zone: ap-northeast-1c
+  zone: ap-northeast-1d

@@ -308,10 +308,10 @@ module "eks" {
       name           = "ng-spot",
       node_role_arn  = module.iam.iam_role_arn["eks-node-group"].arn,
       capacity_type  = "SPOT" # ON_DEMAND or SPOT
-      instance_types = ["t3a.xlarge"]
+      instance_types = ["t3a.small"]
       disk_size      = 20
       desired_nodes  = 1,
-      max_nodes      = 1,
+      max_nodes      = 2,
       min_nodes      = 1
     }
   ]

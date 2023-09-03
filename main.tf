@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      version = "4.62.0"
+      version = "5.15.0"
     }
   }
 
@@ -21,7 +21,7 @@ module "vpc" {
   aws_region      = var.aws_region
   department_name = var.department_name
   project_name    = var.project_name
-  vpc_path        = "./configs/vpc/vpc.yaml"
+  vpc_path        = "./configs/vpc/my-vpcs.yaml"
 
   source = "./modules/my_vpc"
 }
@@ -32,8 +32,7 @@ module "subnet" {
   aws_region      = var.aws_region
   department_name = var.department_name
   project_name    = var.project_name
-  vpc_id          = module.vpc.vpc_name["my-vpc"].id
-  vpc_cidr        = module.vpc.vpc_name["my-vpc"].cidr_block
+  vpc_id          = module.vpc.my_vpcs["my-vpc"].id
   subnet_path     = "./configs/subnet/my-subnets.yaml"
 
   source = "./modules/my_subnets"
@@ -44,7 +43,7 @@ module "igw" {
   aws_region      = var.aws_region
   department_name = var.department_name
   project_name    = var.project_name
-  vpc_id          = module.vpc.vpc_name["my-vpc"].id
+  vpc_id          = module.vpc.my_vpcs["my-vpc"].id
 
   source = "./modules/my_igw"
 }
@@ -59,8 +58,8 @@ module "nacl" {
   aws_region              = var.aws_region
   department_name         = var.department_name
   project_name            = var.project_name
-  vpc_cidr                = module.vpc.vpc_name["my-vpc"].cidr_block
-  vpc_id                  = module.vpc.vpc_name["my-vpc"].id
+  vpc_cidr                = module.vpc.my_vpcs["my-vpc"].cidr_block
+  vpc_id                  = module.vpc.my_vpcs["my-vpc"].id
   subnet_public_a_id      = module.subnet.subnets["my-public-ap-northeast-1a"].id
   subnet_public_c_id      = module.subnet.subnets["my-public-ap-northeast-1c"].id
   subnet_public_d_id      = module.subnet.subnets["my-public-ap-northeast-1d"].id
@@ -78,7 +77,7 @@ module "nacl" {
   source = "./modules/my_nacls"
 }
 
-resource "aws_security_group" "nxd_bastion_sg" {
+resource "aws_security_group" "my_bastion_sg" {
   description = "Used for bastion instance public"
 
   ingress {
@@ -111,10 +110,10 @@ resource "aws_security_group" "nxd_bastion_sg" {
     Project    = var.project_name
   }
 
-  vpc_id = module.vpc.vpc_name["my-vpc"].id
+  vpc_id = module.vpc.my_vpcs["my-vpc"].id
 }
 
-resource "aws_security_group" "nxd_nat_server_sg" {
+resource "aws_security_group" "my_nat_server_sg" {
   description = "Used for NAT instance public"
 
   egress {
@@ -127,7 +126,7 @@ resource "aws_security_group" "nxd_nat_server_sg" {
   }
 
   ingress {
-    cidr_blocks = [module.vpc.vpc_name["my-vpc"].cidr_block]
+    cidr_blocks = [module.vpc.my_vpcs["my-vpc"].cidr_block]
     from_port   = "0"
     protocol    = "-1"
     self        = "false"
@@ -148,7 +147,7 @@ resource "aws_security_group" "nxd_nat_server_sg" {
     Project    = var.project_name
   }
 
-  vpc_id = module.vpc.vpc_name["my-vpc"].id
+  vpc_id = module.vpc.my_vpcs["my-vpc"].id
 }
 
 # instances
@@ -165,8 +164,8 @@ module "instances" {
   instance_type                 = "t3a.small"
   subnet_bastion_id             = module.subnet.subnets["my-public-ap-northeast-1d"].id
   subnet_nat_server_id          = module.subnet.subnets["my-nat-server"].id
-  bastion_security_group_ids    = [aws_security_group.nxd_bastion_sg.id]
-  nat_server_security_group_ids = [aws_security_group.nxd_nat_server_sg.id]
+  bastion_security_group_ids    = [aws_security_group.my_bastion_sg.id]
+  nat_server_security_group_ids = [aws_security_group.my_nat_server_sg.id]
   ssh_key_name                  = var.ssh_key_name
   bastion_ami                   = local.bastion_ami
   bastion_ami_id                = null
@@ -201,7 +200,7 @@ module "rtb" {
   aws_region      = var.aws_region
   department_name = var.department_name
   project_name    = var.project_name
-  vpc_id          = module.vpc.vpc_name["my-vpc"].id
+  vpc_id          = module.vpc.my_vpcs["my-vpc"].id
 
   public_subnet_ids = [
     module.subnet.subnets["my-public-ap-northeast-1a"].id,
@@ -330,8 +329,8 @@ module "eks" {
 # aws_load_balancer_controller
 module "aws_load_balancer_controller" {
   aws_region            = var.aws_region
-  vpc_id                = module.vpc.vpc_name["my-vpc"].id
-  vpc_cidr              = module.vpc.vpc_name["my-vpc"].cidr_block
+  vpc_id                = module.vpc.my_vpcs["my-vpc"].id
+  vpc_cidr              = module.vpc.my_vpcs["my-vpc"].cidr_block
   eks_cluster_name      = module.eks.cluster_name
   eks_cluster_endpoint  = module.eks.endpoint
   eks_oidc_url          = module.eks.oidc_url

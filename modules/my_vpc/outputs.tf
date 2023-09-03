@@ -1,3 +1,3 @@
-output "vpc_name" {
-  value = "${aws_vpc.my_vpc}"
+output "my_vpcs" {
+  value = aws_vpc.my_vpcs
 }

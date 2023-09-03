@@ -21,6 +21,6 @@ variable "department_name" {
 }
 
 variable "vpc_id" {
-  type    = string
-  default = ""
+  type        = string
+  description = "The id of VPC"
 }

@@ -1,9 +1,4 @@
-provider "aws" {
-  region  = var.aws_region
-  profile = var.aws_profile
-}
-
-resource "aws_vpc" "my_vpc" {
+resource "aws_vpc" "my_vpcs" {
   # checkov:skip=CKV2_AWS_11: we only enable flow log on specific vpc
   # checkov:skip=CKV2_AWS_12: we will watch it
   for_each = { for r in local.vpcs : r.vpc_name => r }

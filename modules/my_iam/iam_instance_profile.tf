@@ -6,8 +6,8 @@ resource "aws_iam_instance_profile" "instance_profile" {
 
   for_each = { for r in local.instance_profiles : r.name => r }
 
-  name                 = each.value.name
-  role                 = each.value.role
+  name = each.value.name
+  role = each.value.role
 
   tags = {
     Department = var.department_name

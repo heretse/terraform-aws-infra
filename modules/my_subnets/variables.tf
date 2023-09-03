@@ -31,13 +31,8 @@ variable "environment" {
 }
 
 variable "vpc_id" {
-  type    = string
-  default = ""
-}
-
-variable "vpc_cidr" {
-  type    = string
-  default = ""
+  type        = string
+  description = "The id of VPC"
 }
 
 variable "subnet_path" {

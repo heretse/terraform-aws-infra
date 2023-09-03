@@ -10,6 +10,7 @@ resource "aws_eip_association" "eip_assoc_nat_server_instance" {
 resource "aws_eip_association" "eip_assoc_bastion_instance" {
   instance_id   = var.bastion_instance_id
   allocation_id = aws_eip.my_bastion_eip.id
+
   depends_on = [
     var.bastion_instance_id
   ]

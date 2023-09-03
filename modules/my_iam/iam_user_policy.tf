@@ -1,6 +1,4 @@
 locals {
-  # user_policies = [for user in local.users : { "name" : user.inline_policy.name, "json_file" : user.inline_policy.json_file, "user" : user.name } if lookup(user, "inline_policy", null) != null]
-
   user_policies = flatten([
     for user in local.users : [
       for inline_policy in lookup(user, "inline_policies", []) : {

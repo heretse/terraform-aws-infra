@@ -22,7 +22,7 @@ variable "department_name" {
 
 variable "vpc_id" {
   type    = string
-  default = ""
+  description = "The id of VPC"
 }
 
 variable "public_subnet_ids" {

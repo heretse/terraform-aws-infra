@@ -20,17 +20,14 @@ variable "department_name" {
   default     = "SRE"
 }
 
-variable "vpc_id" {
-  type    = string
-  default = ""
-}
-
 variable "bastion_instance_id" {
-  type    = string
-  default = ""
+  type        = string
+  description = "The instance id of Bastion Server"
+  default     = ""
 }
 
 variable "nat_server_instance_id" {
-  type    = string
-  default = ""
+  type        = string
+  description = "The instance id of NAT Server"
+  default     = ""
 }

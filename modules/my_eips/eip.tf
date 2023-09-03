@@ -13,8 +13,6 @@ resource "aws_eip" "my_bastion_eip" {
     Name       = "bastion EIP"
     Project    = var.project_name
   }
-
-  vpc = "true"
 }
 
 resource "aws_eip" "my_nat_server_eip" {
@@ -32,6 +30,4 @@ resource "aws_eip" "my_nat_server_eip" {
     Name       = "NAT Public IP"
     Project    = var.project_name
   }
-
-  vpc = "true"
 }

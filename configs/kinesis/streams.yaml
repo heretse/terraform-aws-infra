@@ -1,0 +1,6 @@
+streams:
+  - name: my-stream
+    encryption_type: NONE
+    retention_period: 24
+    shard_count: 1
+    enforce_consumer_deletion: false

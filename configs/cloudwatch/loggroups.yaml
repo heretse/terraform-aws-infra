@@ -1,0 +1,3 @@
+loggroups:
+  - loggroup_name: "/example/my_loggroup"
+    retention_in_days: 7

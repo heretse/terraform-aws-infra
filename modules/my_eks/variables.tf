@@ -14,6 +14,12 @@ variable "endpoint_private_access" {
     description = "Endpoint Private Access of the EKS Cluster"
 }
 
+variable "endpoint_public_access" {
+    type        = bool
+    default     = true
+    description = "Endpoint Public Access of the EKS Cluster"
+}
+
 variable "public_subnets" {
     type        = list(any)
     description = "List of all the Public Subnets"
@@ -22,6 +28,11 @@ variable "public_subnets" {
 variable "private_subnets" {
     type        = list(any)
     description = "List of all the Private Subnets"
+}
+
+variable "public_access_cidrs" {
+    type = list(any)
+    description = "List of all the Private Access CIDRs"
 }
 
 variable "eks_version" {

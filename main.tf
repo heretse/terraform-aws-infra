@@ -50,10 +50,6 @@ module "igw" {
 
 # nacl
 module "nacl" {
-  # checkov:skip=CKV_AWS_230: check it later
-  # checkov:skip=CKV_AWS_229: check it later
-  # checkov:skip=CKV_AWS_232: check it later
-  # checkov:skip=CKV_AWS_231: check it later
   aws_profile             = var.aws_profile
   aws_region              = var.aws_region
   department_name         = var.department_name
@@ -152,11 +148,6 @@ resource "aws_security_group" "my_nat_server_sg" {
 
 # instances
 module "instances" {
-  # checkov:skip=CKV_AWS_8: check it later
-  # checkov:skip=CKV_AWS_135:do it later
-  # checkov:skip=CKV_AWS_79:do it later
-  # checkov:skip=CKV_AWS_126:don't enable detail monitor in sandbox env
-
   aws_profile                   = var.aws_profile
   aws_region                    = var.aws_region
   department_name               = var.department_name
@@ -288,11 +279,13 @@ module "eks" {
   cluster_name     = "My-EKS-Cluster"
   cluster_role_arn = module.iam.iam_role_arn["eks-cluster"].arn
 
-  public_subnets   = [
+  public_subnets = [
     module.subnet.subnets["my-public-ap-northeast-1a"].id,
     module.subnet.subnets["my-public-ap-northeast-1c"].id,
     module.subnet.subnets["my-public-ap-northeast-1d"].id
   ]
+
+  public_access_cidrs = local.bastion_allowed_ips
 
   private_subnets = [
     module.subnet.subnets["my-application-ap-northeast-1a"].id,
@@ -304,13 +297,13 @@ module "eks" {
 
   node_groups = [
     {
-      name           = "ng-spot",
-      node_role_arn  = module.iam.iam_role_arn["eks-node-group"].arn,
+      name           = "ng-spot"
+      node_role_arn  = module.iam.iam_role_arn["eks-node-group"].arn
       capacity_type  = "SPOT" # ON_DEMAND or SPOT
       instance_types = ["t3a.small"]
       disk_size      = 20
-      desired_nodes  = 1,
-      max_nodes      = 2,
+      desired_nodes  = 1
+      max_nodes      = 2
       min_nodes      = 1
     }
   ]

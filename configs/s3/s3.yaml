@@ -1,0 +1,15 @@
+buckets:
+  - bucket: my-bucket
+    bucket_policy_file: "./configs/s3/policies/my-bucket.json"
+    department: "The department of bucket"
+    project: ""
+    versioning: "Enabled"
+    index_document: ""
+    server_site_encryption: "true"
+    lifecycle_rule:
+      - enabled: true or false
+        id: "delete-index"
+        prefix: "some-prefix/"
+        expiration:
+          days: 3
+          expired_object_delete_marker: false

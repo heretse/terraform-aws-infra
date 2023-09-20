@@ -1,0 +1,9 @@
+kms:
+  - alias_name: "alias/my-key"
+    customer_master_key_spec: "RSA_2048"
+    enable_key_rotation: true
+    is_enabled: true
+    key_usage: "SIGN_VERIFY"
+    multi_region: false
+    policy_file: "./configs/kms/policies/my-key-policy.json"
+    tagsName: "my-key"

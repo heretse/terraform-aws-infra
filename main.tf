@@ -276,8 +276,10 @@ module "iam" {
 
 # eks
 module "eks" {
-  cluster_name     = "My-EKS-Cluster"
+  cluster_name     = "MY-EKS-CLUSTER"
   cluster_role_arn = module.iam.iam_role_arn["eks-cluster"].arn
+
+  endpoint_private_access = true
 
   public_subnets = [
     module.subnet.subnets["my-public-ap-northeast-1a"].id,
@@ -305,6 +307,14 @@ module "eks" {
       desired_nodes  = 1
       max_nodes      = 2
       min_nodes      = 1
+      labels         = {}
+      taint          = [
+        {
+          key    = "spotInstance"
+          value  = "true"
+          effect = "PREFER_NO_SCHEDULE"
+        }
+      ]
     }
   ]
 
@@ -312,7 +322,8 @@ module "eks" {
     {
       name                   = "karpenter",
       namespace              = "karpenter",
-      pod_execution_role_arn = module.iam.iam_role_arn["eks-fargate-pod-execution-role"].arn
+      pod_execution_role_arn = module.iam.iam_role_arn["eks-fargate-pod-execution-role"].arn,
+      labels                 = {}
     }
   ]
 

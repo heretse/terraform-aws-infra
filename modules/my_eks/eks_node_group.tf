@@ -15,7 +15,18 @@ resource "aws_eks_node_group" "groups" {
     min_size     = each.value.min_nodes
   }
 
+  labels = each.value.labels
+  dynamic "taint" {
+    for_each = lookup(each.value, "taint", [])
+    content {
+      key    = taint.value.key
+      value  = taint.value.value
+      effect = taint.value.effect
+    }
+  }
+
   depends_on = [
+    aws_eks_cluster.eks_cluster,
     var.private_subnets
   ]
 }

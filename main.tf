@@ -324,6 +324,22 @@ module "eks" {
       namespace              = "karpenter",
       pod_execution_role_arn = module.iam.iam_role_arn["eks-fargate-pod-execution-role"].arn,
       labels                 = {}
+    },
+    {
+      name                   = "coredns",
+      namespace              = "kube-system",
+      pod_execution_role_arn = module.iam.iam_role_arn["eks-fargate-pod-execution-role"].arn,
+      labels                 = {
+        k8s-app = "kube-dns"
+      }
+    },
+    {
+      name                   = "aws-load-balancer-controller",
+      namespace              = "kube-system",
+      pod_execution_role_arn = module.iam.iam_role_arn["eks-fargate-pod-execution-role"].arn,
+      labels                 = {
+        "app.kubernetes.io/name" = "aws-load-balancer-controller"
+      }
     }
   ]
 

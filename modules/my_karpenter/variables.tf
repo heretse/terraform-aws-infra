@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "chart_version" {
     type        = string
     description = "Chart Version of karpenter/karpenter"
-    default     = "v0.20.0"
+    default     = "v0.29.2"
 }
 
 variable "namespace" {
@@ -39,4 +39,9 @@ variable "eks_oidc_url" {
 variable "eks_ca_certificate" {
     type        = string
     description = "EKS Cluster CA Certificate"
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "The id of VPC"
 }

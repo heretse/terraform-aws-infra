@@ -1,10 +1,3 @@
-# eksctl create iamidentitymapping \
-#   --username system:node:{{EC2PrivateDNSName}} \
-#   --cluster "${CLUSTER_NAME}" \
-#   --arn "arn:aws:iam::${AWS_ACCOUNT_ID}:role/KarpenterNodeRole-${CLUSTER_NAME}" \
-#   --group system:bootstrappers \
-#   --group system:nodes
-
 data "kubernetes_config_map" "aws_auth" {
   metadata {
     name      = "aws-auth"
@@ -61,12 +54,17 @@ resource "kubernetes_service_account" "karpenter" {
     name      = "karpenter"
     namespace = "karpenter"
     annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.karpenter_controller_role.arn
+      "meta.helm.sh/release-name"      = "karpenter"
+      "meta.helm.sh/release-namespace" = "karpenter"
+      "eks.amazonaws.com/role-arn"     = aws_iam_role.karpenter_controller_role.arn
     }
     labels = {
+      "app.kubernetes.io/instance"   = "karpenter"
       "app.kubernetes.io/name"       = "karpenter"
       "app.kubernetes.io/component"  = "controller"
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/managed-by" = "Helm"
+      "app.kubernetes.io/version"    = trim(var.chart_version, "v")
+      "helm.sh/chart"                = "karpenter-${var.chart_version}"
     }
   }
 }
@@ -88,7 +86,7 @@ resource "null_resource" "helm_experimental_oci" {
 
 resource "helm_release" "karpenter" {
   name             = "karpenter"
-  repository       = "oci://public.ecr.aws/karpenter/karpenter"
+  repository       = "oci://public.ecr.aws/karpenter"
   chart            = "karpenter"
   version          = var.chart_version
   namespace        = var.namespace
@@ -96,16 +94,16 @@ resource "helm_release" "karpenter" {
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.karpenter_controller_role.name
+    value = aws_iam_role.karpenter_controller_role.arn
   }
 
   set {
-    name  = "controller.clusterName"
+    name  = "settings.aws.clusterName"
     value = var.eks_cluster_name
   }
 
   set {
-    name  = "controller.clusterEndpoint"
+    name  = "settings.aws.clusterEndpoint"
     value = var.eks_cluster_endpoint
   }
 
@@ -126,30 +124,25 @@ resource "helm_release" "karpenter" {
   ]
 }
 
-resource "kubernetes_config_map" "aws_auth" {
-  metadata {
-    name = "aws-auth"
-    namespace = "kube-system"
-  }
+# Need to added by manually
+# resource "kubernetes_config_map" "aws_auth" {
+#   metadata {
+#     name = "aws-auth"
+#     namespace = "kube-system"
+#   }
 
-  data = {
-    "mapRoles" = <<EOF
-${data.kubernetes_config_map.aws_auth.data.mapRoles}
-- rolearn: arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/KarpenterNodeRole-${var.eks_cluster_name}
-  username: system:node:{{EC2PrivateDNSName}}
-  groups:
-    - system:bootstrappers
-    - system:nodes
-EOF
-    "mapUsers" = <<EOF
-- userarn: arn:aws:iam::${data.aws_caller_identity.current.account_id}:root
-  username: admin
-  groups:
-    - system:masters
-EOF
-  }
+#   data = {
+#     "mapRoles" = <<EOF
+# ${data.kubernetes_config_map.aws_auth.data.mapRoles}
+# - groups:
+#     - system:bootstrappers
+#     - system:nodes
+#   rolearn: arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/KarpenterNodeRole-${var.eks_cluster_name}
+#   username: system:node:{{EC2PrivateDNSName}}
+# EOF
+#   }
 
-   depends_on = [
-    data.kubernetes_config_map.aws_auth
-   ]
-}
+#    depends_on = [
+#     data.kubernetes_config_map.aws_auth
+#    ]
+# }

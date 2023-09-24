@@ -1,6 +1,7 @@
 aws_region="ap-northeast-1"
-aws_profile="your-profile"
+aws_profile="<YOUR_PROFILE>"
 project_name="example"
 department_name="SRE"
 environment="develop"
 ssh_key_name="my-ssh-key"
+cassandra_root_password="<CASSANDRA_ROOT_PASSWORD>"

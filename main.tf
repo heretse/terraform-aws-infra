@@ -276,6 +276,8 @@ module "iam" {
 
 # eks
 module "eks" {
+  aws_region       = var.aws_region
+  aws_profile      = var.aws_profile
   cluster_name     = "MY-EKS-CLUSTER"
   cluster_role_arn = module.iam.iam_role_arn["eks-cluster"].arn
 
@@ -299,16 +301,17 @@ module "eks" {
 
   node_groups = [
     {
-      name           = "ng-spot"
+      name           = "ng-arm-spot"
       node_role_arn  = module.iam.iam_role_arn["eks-node-group"].arn
+      ami_type       = "AL2_ARM_64"
       capacity_type  = "SPOT" # ON_DEMAND or SPOT
-      instance_types = ["t3a.small"]
+      instance_types = ["t4g.small"]
       disk_size      = 20
-      desired_nodes  = 1
+      desired_nodes  = 0
       max_nodes      = 2
-      min_nodes      = 1
+      min_nodes      = 0
       labels         = {}
-      taint          = [
+      taint = [
         {
           key    = "spotInstance"
           value  = "true"
@@ -348,13 +351,26 @@ module "eks" {
 
 # aws_load_balancer_controller
 module "aws_load_balancer_controller" {
-  aws_region            = var.aws_region
-  vpc_id                = module.vpc.my_vpcs["my-vpc"].id
-  vpc_cidr              = module.vpc.my_vpcs["my-vpc"].cidr_block
-  eks_cluster_name      = module.eks.cluster_name
-  eks_cluster_endpoint  = module.eks.endpoint
-  eks_oidc_url          = module.eks.oidc_url
-  eks_ca_certificate    = module.eks.ca_certificate
+  aws_region           = var.aws_region
+  vpc_id               = module.vpc.my_vpcs["my-vpc"].id
+  vpc_cidr             = module.vpc.my_vpcs["my-vpc"].cidr_block
+  eks_cluster_name     = module.eks.cluster_name
+  eks_cluster_endpoint = module.eks.endpoint
+  eks_oidc_url         = module.eks.oidc_url
+  eks_ca_certificate   = module.eks.ca_certificate
 
-  source                = "./modules/my_aws_load_balancer_controller"
+  source = "./modules/my_aws_load_balancer_controller"
+}
+
+# karpenter
+module "karpenter" {
+  aws_region           = var.aws_region
+  create_namespace     = true
+  eks_cluster_name     = module.eks.cluster_name
+  eks_cluster_endpoint = module.eks.endpoint
+  eks_oidc_url         = module.eks.oidc_url
+  eks_ca_certificate   = module.eks.ca_certificate
+  vpc_id               = module.vpc.my_vpcs["my-vpc"].id
+
+  source = "./modules/my_karpenter"
 }

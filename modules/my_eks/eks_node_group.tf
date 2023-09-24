@@ -5,6 +5,7 @@ resource "aws_eks_node_group" "groups" {
   node_group_name = each.value.name
   node_role_arn   = each.value.node_role_arn
   subnet_ids      = var.private_subnets
+  ami_type        = lookup(each.value, "ami_type", "AL2_x86_64")
   capacity_type   = each.value.capacity_type
   instance_types  = each.value.instance_types
   disk_size       = each.value.disk_size

@@ -293,6 +293,28 @@ resource "aws_network_acl" "my_application_acl" {
   egress {
     action     = "allow"
     cidr_block = "0.0.0.0/0"
+    from_port  = "53"
+    icmp_code  = "0"
+    icmp_type  = "0"
+    protocol   = "17"
+    rule_no    = "112"
+    to_port    = "53"
+  }
+
+  egress {
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = "53"
+    icmp_code  = "0"
+    icmp_type  = "0"
+    protocol   = "6"
+    rule_no    = "114"
+    to_port    = "53"
+  }
+
+  egress {
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
     from_port  = "80"
     icmp_code  = "0"
     icmp_type  = "0"
@@ -365,6 +387,28 @@ resource "aws_network_acl" "my_application_acl" {
     protocol   = "6"
     rule_no    = "1000"
     to_port    = "22"
+  }
+
+  ingress {
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = "53"
+    icmp_code  = "0"
+    icmp_type  = "0"
+    protocol   = "17"
+    rule_no    = "121"
+    to_port    = "53"
+  }
+
+  ingress {
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = "53"
+    icmp_code  = "0"
+    icmp_type  = "0"
+    protocol   = "6"
+    rule_no    = "123"
+    to_port    = "53"
   }
 
   ingress {

@@ -1,6 +1,6 @@
 resource "aws_eks_cluster" "eks_cluster" {
   name                      = var.cluster_name
-  enabled_cluster_log_types = ["api", "audit", "authenticator","controllerManager","scheduler"]
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   role_arn                  = var.cluster_role_arn
 
   vpc_config {

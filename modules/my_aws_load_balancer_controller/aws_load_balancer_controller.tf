@@ -8,7 +8,7 @@ data "http" "iam_policy" {
 }
 
 resource "aws_iam_policy" "AWSLoadBalancerControllerIAMPolicy" {
-  name = "AWSLoadBalancerControllerIAMPolicy"
+  name   = "AWSLoadBalancerControllerIAMPolicy"
   policy = data.http.iam_policy.response_body
 }
 
@@ -101,7 +101,7 @@ resource "kubernetes_cluster_role_binding" "load_balancer_Controller" {
     name      = kubernetes_service_account.load_balancer_Controller.metadata[0].name
     namespace = kubernetes_service_account.load_balancer_Controller.metadata[0].namespace
   }
-  depends_on = [ kubernetes_cluster_role.load_balancer_Controller ]
+  depends_on = [kubernetes_cluster_role.load_balancer_Controller]
 }
 
 resource "helm_release" "aws_load_balancer_controller" {

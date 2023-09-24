@@ -32,3 +32,9 @@ variable "ssh_key_name" {
   type    = string
   default = ""
 }
+
+variable "cassandra_root_password" {
+  type    = string
+  description = "Cassandra Root Password"
+  default = ""
+}

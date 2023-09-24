@@ -5,9 +5,9 @@ locals {
 resource "aws_cloudfront_distribution" "distributions" {
   # checkov:skip=CKV2_AWS_47: need to do it later
 
-  for_each = { for r in local.distributions : r.alias => r }
+  for_each = { for r in local.distributions : r.name => r }
 
-  aliases = [each.value.alias]
+  aliases = each.value.aliases
 
   dynamic "custom_error_response" {
 

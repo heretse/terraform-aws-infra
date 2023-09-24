@@ -21,7 +21,7 @@ variable "department_name" {
 }
 
 variable "vpc_id" {
-  type    = string
+  type        = string
   description = "The id of VPC"
 }
 

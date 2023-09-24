@@ -8,7 +8,7 @@ resource "aws_eks_fargate_profile" "profiles" {
 
   selector {
     namespace = each.value.namespace
-    labels = each.value.labels
+    labels    = each.value.labels
   }
 
   depends_on = [

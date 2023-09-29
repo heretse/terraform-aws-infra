@@ -1,0 +1,14 @@
+tables:
+  - name: my-table
+    attributes:
+      - name: Key
+        type: S
+      - name: Path
+        type: S
+    billing_mode: "PROVISIONED"
+    hash_key: Path
+    range_key: Key
+    read_capacity: 5
+    stream_enabled: false
+    table_class: STANDARD
+    write_capacity: 5

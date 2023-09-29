@@ -1,0 +1,17 @@
+{
+  "rules": [
+    {
+      "action": {
+        "type": "expire"
+      },
+      "description": "Remove untagged images for 7 days",
+      "rulePriority": 1,
+      "selection": {
+        "countNumber": 7,
+        "countType": "sinceImagePushed",
+        "countUnit": "days",
+        "tagStatus": "untagged"
+      }
+    }
+  ]
+}

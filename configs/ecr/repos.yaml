@@ -1,0 +1,6 @@
+repos:
+  - name: my-repo
+    lifecycle: ./configs/ecr/lifecycle_policy.json
+    permission: ./configs/ecr/permission_policy.json
+    image_tag_mutable: true
+    scan_on_push: true

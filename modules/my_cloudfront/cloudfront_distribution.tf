@@ -13,6 +13,8 @@ resource "aws_cloudfront_distribution" "distributions" {
 
   aliases = each.value.aliases
 
+  default_root_object = lookup(each.value, "default_root_object", null)
+
   dynamic "custom_error_response" {
 
     for_each = lookup(each.value, "custom_error_response", [])
@@ -35,7 +37,7 @@ resource "aws_cloudfront_distribution" "distributions" {
     min_ttl                    = "0"
     smooth_streaming           = "false"
     target_origin_id           = "S3-${format("%s%s", each.value.bucket_name, each.value.origin_path)}"
-    viewer_protocol_policy     = "redirect-to-https"
+    viewer_protocol_policy     = lookup(each.value, "viewer_protocol_policy", "redirect-to-https")
     response_headers_policy_id = (each.value.response_headers_policy != "") ? aws_cloudfront_response_headers_policy.policies["${each.value.response_headers_policy}"].id : null
 
     dynamic "lambda_function_association" {
@@ -61,15 +63,40 @@ resource "aws_cloudfront_distribution" "distributions" {
     }
   }
 
-  origin {
-    connection_attempts = "3"
-    connection_timeout  = "10"
-    domain_name         = "${each.value.bucket_name}.s3.amazonaws.com"
-    origin_id           = "S3-${format("%s%s", each.value.bucket_name, each.value.origin_path)}"
-    origin_path         = each.value.origin_path != "" ? each.value.origin_path : null
+  dynamic "ordered_cache_behavior" {
+    for_each = lookup(each.value, "ordered_cache_behavior", [])
 
-    s3_origin_config {
-      origin_access_identity = var.access_identity_path
+    content {
+      path_pattern    = ordered_cache_behavior.value["path_pattern"]
+      allowed_methods = ordered_cache_behavior.value["allowed_methods"]
+      cached_methods  = ordered_cache_behavior.value["cached_methods"]
+      cache_policy_id = ordered_cache_behavior.value["cache_policy_id"]
+
+      compress               = true
+      default_ttl            = 0
+      max_ttl                = 0
+      min_ttl                = 0
+      smooth_streaming       = false
+      target_origin_id       = "S3-${each.value.bucket_name}"
+      trusted_key_groups     = []
+      trusted_signers        = []
+      viewer_protocol_policy = "redirect-to-https"
+    }
+  }
+
+  dynamic "origin" {
+    for_each = lookup(each.value, "origin", [{ connection_attempts : 3, connection_timeout : 10, domain_name : "${each.value.bucket_name}.s3.amazonaws.com", origin_id : "S3-${format("%s%s", each.value.bucket_name, each.value.origin_path)}", origin_path : (each.value.origin_path != "" ? each.value.origin_path : null) }])
+
+    content {
+      connection_attempts = origin.value.connection_attempts
+      connection_timeout  = origin.value.connection_timeout
+      domain_name         = origin.value.domain_name
+      origin_id           = origin.value.origin_id
+      origin_path         = origin.value.origin_path
+
+      s3_origin_config {
+        origin_access_identity = var.access_identity_path
+      }
     }
   }
 

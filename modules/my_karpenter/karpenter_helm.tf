@@ -3,11 +3,6 @@ data "kubernetes_config_map" "aws_auth" {
     name      = "aws-auth"
     namespace = "kube-system"
   }
-
-  depends_on = [
-    var.eks_cluster_endpoint,
-    var.eks_ca_certificate
-  ]
 }
 
 data "aws_iam_policy_document" "karpenter_controller_assume_role_policy" {
@@ -33,7 +28,7 @@ resource "aws_iam_role" "karpenter_controller_role" {
   path                 = "/"
   max_session_duration = 3600
 
-  assume_role_policy = join("", data.aws_iam_policy_document.karpenter_controller_assume_role_policy.*.json)
+  assume_role_policy = join("", data.aws_iam_policy_document.karpenter_controller_assume_role_policy[*].json)
 
   tags = {
     "alpha.eksctl.io/cluster-name"                = var.eks_cluster_name
@@ -114,13 +109,11 @@ resource "helm_release" "karpenter" {
 
   set {
     name  = "settings.aws.interruptionQueueName"
-    value = var.eks_cluster_name 
+    value = var.eks_cluster_name
   }
 
   depends_on = [
-    null_resource.helm_experimental_oci,
-    var.eks_cluster_endpoint,
-    var.eks_ca_certificate
+    null_resource.helm_experimental_oci
   ]
 }
 

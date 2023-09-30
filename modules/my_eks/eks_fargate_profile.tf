@@ -10,8 +10,4 @@ resource "aws_eks_fargate_profile" "profiles" {
     namespace = each.value.namespace
     labels    = each.value.labels
   }
-
-  depends_on = [
-    var.private_subnets
-  ]
 }

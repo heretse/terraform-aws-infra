@@ -3,12 +3,18 @@ subnets:
 - cidr: 10.4.4.0/24
   name: my-application-ap-northeast-1a
   zone: ap-northeast-1a
+  k8s_internal_elb: true
+  karpenter_discovery: "MY-EKS-CLUSTER"
 - cidr: 10.4.5.0/24
   name: my-application-ap-northeast-1c
   zone: ap-northeast-1c
+  k8s_internal_elb: true
+  karpenter_discovery: "MY-EKS-CLUSTER"
 - cidr: 10.4.6.0/24
   name: my-application-ap-northeast-1d
   zone: ap-northeast-1d
+  k8s_internal_elb: true
+  karpenter_discovery: "MY-EKS-CLUSTER"
 # intra
 - cidr: 10.4.8.0/24
   name: my-intra-ap-northeast-1a
@@ -23,12 +29,18 @@ subnets:
 - cidr: 10.4.0.0/24
   name: my-public-ap-northeast-1a
   zone: ap-northeast-1a
+  k8s_elb: true
+  map_public_ip_on_launch: true
 - cidr: 10.4.1.0/24
   name: my-public-ap-northeast-1c
   zone: ap-northeast-1c
+  k8s_elb: true
+  map_public_ip_on_launch: true
 - cidr: 10.4.2.0/24
   name: my-public-ap-northeast-1d
   zone: ap-northeast-1d
+  k8s_elb: true
+  map_public_ip_on_launch: true
 # persistence
 - cidr: 10.4.16.0/24
   name: my-persistence-ap-northeast-1a

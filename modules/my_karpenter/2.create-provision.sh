@@ -31,11 +31,34 @@ kind: Provisioner
 metadata:
   name: karpenter-arm-spot
 spec:
+  # References cloud provider-specific custom resource, see your cloud provider specific documentation
+  providerRef:
+    name: default
+
+  # Provisioned nodes will have these taints
+  # Taints may prevent pods from scheduling if they are not tolerated by the pod.
+  taints:
+    - key: armInstance
+      value: 'true'
+      effect: PreferNoSchedule
+
+  # Labels are arbitrary key-values that are applied to all nodes
+  labels:
+    department: sre
+
+  # Annotations are arbitrary key-values that are applied to all nodes
+  annotations:
+    example.com/owner: "my-team"
+
   # Enables consolidation which attempts to reduce cluster cost by both removing un-needed nodes and down-sizing those
   # that can't be removed.  Mutually exclusive with the ttlSecondsAfterEmpty parameter.
   consolidation:
     enabled: true
-  ttlSecondsUntilExpired: 2592000
+
+  # If omitted, the feature is disabled, nodes will never scale down due to low utilization
+  ttlSecondsUntilExpired: 2592000 # 30 Days = 60 * 60 * 24 * 30 Seconds;
+
+  # Requirements that constrain the parameters of provisioned nodes.
   requirements:
     - key: "alpha.eksctl.io/nodegroup-name"
       operator: In
@@ -55,21 +78,14 @@ spec:
     - key: "eks-cluster"
       operator: In
       values: [${CLUSTER_NAME}]
-  taints:
-    - key: spotInstance
-      value: 'true'
-      effect: PreferNoSchedule
-  providerRef:
-    name: default
-# 6 xlarge or 3 2xlarge
+
+  # Resource limits constrain the total size of the cluster.
+  # Limits prevent Karpenter from creating new instances once the limit is exceeded.
   limits:
     resources:
       cpu: 24
-      memory: 48Gi
-  taints:
-    - key: armInstance
-      value: 'true'
-      effect: PreferNoSchedule
+      memory: 96Gi
+
   # Karpenter provides the ability to specify a few additional Kubelet args.
   # These are all optional and provide support for additional customization and use cases.
   kubeletConfiguration:

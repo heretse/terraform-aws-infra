@@ -27,7 +27,6 @@ resource "aws_eks_node_group" "groups" {
   }
 
   depends_on = [
-    aws_eks_cluster.eks_cluster,
-    var.private_subnets
+    aws_eks_cluster.eks_cluster
   ]
 }

@@ -12,7 +12,7 @@ repos:
   rev: v0.1.22 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
   hooks:
     - id: tflint
-      exclude: 'modules/.*'
+      exclude: (modules/.*)
       args:
       - "--module"
       - "--config=.tflint.hcl"
@@ -22,10 +22,10 @@ repos:
 - repo: git://github.com/antonbabenko/pre-commit-terraform
   rev: v1.83.4 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
   hooks:
-    # - id: terraform_tfsec
-    #   args:
-    #     -  --args=--exclude=__GIT_WORKING_DIR__/modules/.*
+    - id: terraform_tfsec
+      exclude: 'modules/.*'
     - id: terraform_docs
-    # - id: terraform_checkov
-    #   args:
-    #     - "--args=--output-file __GIT_WORKING_DIR__/checkov.outputs --skip-path __GIT_WORKING_DIR__/configs --skip-path __GIT_WORKING_DIR__/modules/my_karpenter/cloudformation.yaml --skip-path __GIT_WORKING_DIR__/my-ingress-node-red.yaml"
+    - id: terraform_checkov
+      exclude: 'modules/.*'
+      args:
+        - "--args=--output-file __GIT_WORKING_DIR__/checkov.outputs --skip-path __GIT_WORKING_DIR__/configs --skip-path __GIT_WORKING_DIR__/modules/my_karpenter/cloudformation.yaml --skip-path __GIT_WORKING_DIR__/my-ingress-node-red.yaml"

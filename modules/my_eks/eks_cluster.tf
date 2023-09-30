@@ -20,9 +20,6 @@ resource "aws_eks_cluster" "eks_cluster" {
     Name = var.cluster_name
   }
 
-  depends_on = [
-    var.cluster_role_arn
-  ]
 }
 
 data "tls_certificate" "certificate" {

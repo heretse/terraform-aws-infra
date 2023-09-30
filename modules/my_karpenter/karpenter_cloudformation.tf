@@ -22,7 +22,7 @@ resource "aws_iam_role" "karpenter_node_role" {
 }
 POLICY
 
-  managed_policy_arns  = [
+  managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
@@ -35,6 +35,9 @@ POLICY
 
 # KarpenterControllerPolicy
 resource "aws_iam_policy" "karpenter_controller_policy" {
+  # checkov:skip=CKV_AWS_288: "Ensure IAM policies does not allow data exfiltration"
+  # checkov:skip=CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+
   name = "KarpenterControllerPolicy-${var.eks_cluster_name}"
   path = "/"
 

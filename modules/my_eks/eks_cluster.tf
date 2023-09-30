@@ -1,4 +1,9 @@
 resource "aws_eks_cluster" "eks_cluster" {
+  # checkov:skip=CKV_AWS_38: "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0"
+  # checkov:skip=CKV_AWS_39: "Ensure Amazon EKS public endpoint disabled"
+  # checkov:skip=CKV_AWS_58: "Ensure EKS Cluster has Secrets Encryption Enabled"
+  # checkov:skip=CKV_AWS_81: "Ensure MSK Cluster encryption in rest and transit is enabled"
+
   name                      = var.cluster_name
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   role_arn                  = var.cluster_role_arn

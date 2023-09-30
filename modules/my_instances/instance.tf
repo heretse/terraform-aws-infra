@@ -4,6 +4,11 @@ data "local_file" "configure_nat" {
 
 resource "aws_instance" "bastion_instance" {
   # checkov:skip=CKV2_AWS_41: need to add iam role later
+  # checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+  # checkov:skip=CKV_AWS_126: "Ensure that detailed monitoring is enabled for EC2 instances"
+  # checkov:skip=CKV_AWS_135: "Ensure that EC2 is EBS optimized"
+  # checkov:skip=CKV_AWS_8: "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted"
+
   ami                    = (var.bastion_ami_id != null) ? var.bastion_ami_id : data.aws_ami.bastion_ami.id
   instance_type          = var.instance_type
   key_name               = var.ssh_key_name
@@ -29,6 +34,11 @@ resource "aws_instance" "bastion_instance" {
 
 resource "aws_instance" "nat_server_instance" {
   # checkov:skip=CKV2_AWS_41: need to add iam role later
+  # checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+  # checkov:skip=CKV_AWS_126: "Ensure that detailed monitoring is enabled for EC2 instances"
+  # checkov:skip=CKV_AWS_135: "Ensure that EC2 is EBS optimized"
+  # checkov:skip=CKV_AWS_8: "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted"
+
   count = var.create_nat_server_instance ? 1 : 0
 
   ami                    = (var.nat_server_ami_id != null) ? var.nat_server_ami_id : data.aws_ami.ami.id

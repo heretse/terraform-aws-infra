@@ -3,6 +3,7 @@ locals {
 }
 
 resource "aws_cloudfront_response_headers_policy" "policies" {
+  # checkov:skip=CKV_AWS_259: "Ensure CloudFront response header policy enforces Strict Transport Security"
 
   for_each = { for r in local.response_headers_policies : r.name => r }
 

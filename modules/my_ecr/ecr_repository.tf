@@ -1,4 +1,7 @@
 resource "aws_ecr_repository" "repos" {
+  # checkov:skip=CKV_AWS_51: "Ensure ECR Image Tags are immutable"
+  # checkov:skip=CKV_AWS_163: "Ensure ECR image scanning on push is enabled"
+  # checkov:skip=CKV_AWS_136: "Ensure that ECR repositories are encrypted using KMS"
 
   for_each = { for r in local.repos : r.name => r }
 

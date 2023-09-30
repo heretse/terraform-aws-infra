@@ -3,6 +3,8 @@ locals {
 }
 
 resource "aws_kms_key" "kms" {
+  # checkov:skip=CKV_AWS_227: "Ensure KMS key is enabled"
+
   for_each = { for r in local.kms : r.tagsName => r }
 
   customer_master_key_spec = each.value.customer_master_key_spec

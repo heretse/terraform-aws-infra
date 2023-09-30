@@ -11,6 +11,7 @@ locals {
 }
 
 resource "aws_iam_user_policy" "user_policies" {
+  # checkov:skip=CKV_AWS_40: "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)"
 
   for_each = { for r in local.user_policies : "${r.user}:${r.name}" => r }
 

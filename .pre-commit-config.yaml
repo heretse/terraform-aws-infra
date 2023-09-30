@@ -1,0 +1,31 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0 # Get the latest from: https://github.com/pre-commit/pre-commit-hooks/releases
+  hooks:
+    - id: check-yaml
+    - id: check-merge-conflict
+    - id: detect-aws-credentials
+    - id: end-of-file-fixer
+      exclude: (checkov.outputs/results_cli.txt)
+    - id: trailing-whitespace
+- repo: https://github.com/gruntwork-io/pre-commit
+  rev: v0.1.22 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
+  hooks:
+    - id: tflint
+      exclude: 'modules/.*'
+      args:
+      - "--module"
+      - "--config=.tflint.hcl"
+    - id: terraform-validate
+      exclude: 'modules/.*'
+    - id: terraform-fmt
+- repo: git://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.83.4 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+  hooks:
+    # - id: terraform_tfsec
+    #   args:
+    #     -  --args=--exclude=__GIT_WORKING_DIR__/modules/.*
+    - id: terraform_docs
+    # - id: terraform_checkov
+    #   args:
+    #     - "--args=--output-file __GIT_WORKING_DIR__/checkov.outputs --skip-path __GIT_WORKING_DIR__/configs --skip-path __GIT_WORKING_DIR__/modules/my_karpenter/cloudformation.yaml --skip-path __GIT_WORKING_DIR__/my-ingress-node-red.yaml"

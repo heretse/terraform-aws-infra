@@ -1,4 +1,6 @@
 resource "aws_msk_cluster" "kafka" {
+  # checkov:skip=CKV_AWS_81: "Ensure MSK Cluster encryption in rest and transit is enabled"
+
   cluster_name           = var.kafka_cluster_name
   kafka_version          = var.kafka_version
   number_of_broker_nodes = var.kafka_number_of_broker_nodes

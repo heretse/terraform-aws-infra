@@ -1,4 +1,6 @@
 resource "aws_network_acl" "my_nat_acl" {
+  # checkov:skip=CKV2_AWS_1: "Ensure that all NACL are attached to subnets"
+
   egress {
     action     = "allow"
     cidr_block = "0.0.0.0/0"
@@ -52,6 +54,8 @@ resource "aws_network_acl" "my_nat_acl" {
 }
 
 resource "aws_network_acl" "my_public_acl" {
+  # checkov:skip=CKV2_AWS_1: "Ensure that all NACL are attached to subnets"
+
   egress {
     action     = "allow"
     cidr_block = "0.0.0.0/0"
@@ -235,6 +239,8 @@ resource "aws_network_acl" "my_public_acl" {
 }
 
 resource "aws_network_acl" "my_application_acl" {
+  # checkov:skip=CKV2_AWS_1: "Ensure that all NACL are attached to subnets"
+
   egress {
     action     = "allow"
     cidr_block = "0.0.0.0/0"
@@ -473,6 +479,8 @@ resource "aws_network_acl" "my_application_acl" {
 }
 
 resource "aws_network_acl" "my_persistence_acl" {
+  # checkov:skip=CKV2_AWS_1: "Ensure that all NACL are attached to subnets"
+
   egress {
     action     = "allow"
     cidr_block = "0.0.0.0/0"

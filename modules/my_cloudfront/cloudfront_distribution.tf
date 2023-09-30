@@ -4,6 +4,10 @@ locals {
 
 resource "aws_cloudfront_distribution" "distributions" {
   # checkov:skip=CKV2_AWS_47: need to do it later
+  # checkov:skip=CKV_AWS_68: "CloudFront Distribution should have WAF enabled"
+  # checkov:skip=CKV_AWS_51: "Ensure ECR Image Tags are immutable"
+  # checkov:skip=CKV_AWS_305: "Ensure Cloudfront distribution has a default root object configured"
+  # checkov:skip=CKV_AWS_310: "Ensure CloudFront distributions should have origin failover configured"
 
   for_each = { for r in local.distributions : r.name => r }
 

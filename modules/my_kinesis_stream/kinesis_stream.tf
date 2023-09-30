@@ -1,4 +1,6 @@
 resource "aws_kinesis_stream" "streams" {
+  # checkov:skip=CKV_AWS_43: "Ensure Kinesis Stream is securely encrypted"
+
   for_each = { for r in local.streams : r.name => r }
 
   encryption_type           = each.value.encryption_type

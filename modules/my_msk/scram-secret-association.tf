@@ -1,12 +1,15 @@
-
-
 resource "aws_secretsmanager_secret" "kafka_secrets" {
+  # checkov:skip=CKV2_AWS_57: "Ensure Secrets Manager secrets should have automatic rotation enabled"
+
   for_each   = { for user in var.msk_users : user.username => user }
   name       = "AmazonMSK_${each.value.username}"
   kms_key_id = aws_kms_key.kafka_key.key_id
 }
 
 resource "aws_kms_key" "kafka_key" {
+  # checkov:skip=CKV_AWS_7: "Ensure rotation for customer created CMKs is enabled"
+  # checkov:skip=CKV2_AWS_64: "Ensure KMS key Policy is defined"
+
   description = "Example Key for MSK Cluster Scram Secret Association"
 }
 

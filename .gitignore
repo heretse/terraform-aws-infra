@@ -37,3 +37,5 @@ override.tf.json
 
 # Plan Graph file
 *.tfgraph
+
+checkov.outputs

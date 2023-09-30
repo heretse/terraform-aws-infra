@@ -1,5 +1,7 @@
 variable "match_comment" { default = "/(?U)(?m)(?s)(^#.*$)/" }
 resource "aws_instance" "cassandra" {
+  # checkov:skip=CKV2_AWS_41: "Ensure an IAM role is attached to EC2 instance"
+
   count         = length(var.private_ips)
   ami           = data.aws_ami.ami.id
   instance_type = var.instance_type

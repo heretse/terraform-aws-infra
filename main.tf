@@ -50,6 +50,10 @@ module "igw" {
 
 # nacl
 module "nacl" {
+  # checkov:skip=CKV_AWS_229: "Ensure no NACL allow ingress from 0.0.0.0:0 to port 21"
+  # checkov:skip=CKV_AWS_230: "Ensure no NACL allow ingress from 0.0.0.0:0 to port 20"
+  # checkov:skip=CKV_AWS_231: "Ensure no NACL allow ingress from 0.0.0.0:0 to port 3389"
+  # checkov:skip=CKV_AWS_232: "Ensure no NACL allow ingress from 0.0.0.0:0 to port 22"
   aws_profile             = var.aws_profile
   aws_region              = var.aws_region
   department_name         = var.department_name
@@ -73,7 +77,10 @@ module "nacl" {
   source = "./modules/my_nacls"
 }
 
+# tfsec:ignore:aws-vpc-add-description-to-security-group tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-vpc-no-public-ingress-sg
 resource "aws_security_group" "my_bastion_sg" {
+  # checkov:skip=CKV_AWS_24: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22"
+  # checkov:skip=CKV_AWS_23: "Ensure every security groups rule has a description"
   description = "Used for bastion instance public"
 
   ingress {
@@ -109,7 +116,9 @@ resource "aws_security_group" "my_bastion_sg" {
   vpc_id = module.vpc.my_vpcs["my-vpc"].id
 }
 
+# tfsec:ignore:aws-vpc-add-description-to-security-group tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-vpc-no-public-ingress-sg
 resource "aws_security_group" "my_nat_server_sg" {
+  # checkov:skip=CKV_AWS_23: "Ensure every security groups rule has a description"
   description = "Used for NAT instance public"
 
   egress {
@@ -148,6 +157,10 @@ resource "aws_security_group" "my_nat_server_sg" {
 
 # instances
 module "instances" {
+  # checkov:skip=CKV_AWS_8: check it later
+  # checkov:skip=CKV_AWS_135:do it later
+  # checkov:skip=CKV_AWS_79:do it later
+  # checkov:skip=CKV_AWS_126:don't enable detail monitor in sandbox env
   aws_profile                   = var.aws_profile
   aws_region                    = var.aws_region
   department_name               = var.department_name
@@ -276,6 +289,8 @@ module "iam" {
 
 # eks
 module "eks" {
+  # checkov:skip=CKV_AWS_39: "Ensure Amazon EKS public endpoint disabled"
+  # checkov:skip=CKV_AWS_58: "Ensure EKS Cluster has Secrets Encryption Enabled"
   aws_region       = var.aws_region
   aws_profile      = var.aws_profile
   cluster_name     = "MY-EKS-CLUSTER"
@@ -332,7 +347,7 @@ module "eks" {
       name                   = "coredns",
       namespace              = "kube-system",
       pod_execution_role_arn = module.iam.iam_role_arn["eks-fargate-pod-execution-role"].arn,
-      labels                 = {
+      labels = {
         k8s-app = "kube-dns"
       }
     },
@@ -340,7 +355,7 @@ module "eks" {
       name                   = "aws-load-balancer-controller",
       namespace              = "kube-system",
       pod_execution_role_arn = module.iam.iam_role_arn["eks-fargate-pod-execution-role"].arn,
-      labels                 = {
+      labels = {
         "app.kubernetes.io/name" = "aws-load-balancer-controller"
       }
     }

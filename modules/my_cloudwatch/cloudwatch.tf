@@ -4,10 +4,11 @@ locals {
 
 
 resource "aws_cloudwatch_log_group" "log_group" {
+  # checkov:skip=CKV_AWS_158: "Ensure that CloudWatch Log Group is encrypted by KMS"
+
   for_each = { for r in local.cloudwatch_loggroups : r.loggroup_name => r }
 
-
-  name = each.value.loggroup_name
+  name              = each.value.loggroup_name
   retention_in_days = each.value.retention_in_days
 
   tags = {

@@ -3,6 +3,12 @@ variable "aws_region" {
   description = "AWS Region"
 }
 
+variable "app_version" {
+  type        = string
+  description = "App Version of aws-eks-csi-driver"
+  default     = "2.6.0"
+}
+
 variable "chart_version" {
   type        = string
   description = "Chart Version of eks/aws-load-balancer-controller"

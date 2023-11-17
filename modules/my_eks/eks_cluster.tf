@@ -11,6 +11,7 @@ resource "aws_eks_cluster" "eks_cluster" {
   vpc_config {
     endpoint_private_access = var.endpoint_private_access
     public_access_cidrs     = var.public_access_cidrs
+    security_group_ids      = var.security_group_ids
     subnet_ids              = concat(var.public_subnets, var.private_subnets)
   }
 
@@ -19,7 +20,6 @@ resource "aws_eks_cluster" "eks_cluster" {
   tags = {
     Name = var.cluster_name
   }
-
 }
 
 data "tls_certificate" "certificate" {
@@ -28,6 +28,6 @@ data "tls_certificate" "certificate" {
 
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
   client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.certificate.certificates[0].sha1_fingerprint]
+  thumbprint_list = (var.oidc_provider_thumbprint_list == null) ? [data.tls_certificate.certificate.certificates[0].sha1_fingerprint] : var.oidc_provider_thumbprint_list
   url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }

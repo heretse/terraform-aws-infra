@@ -8,7 +8,7 @@ distributions:
     origin_path: ""
     logging_bucket: ""
     logging_prefix: ""
-    response_headers_policy: "NoStoreResponseHeader"
+    response_headers_policy: "NoStoreResponseHeaderWithCORS"
     custom_error_response:
       - error_caching_min_ttl: "10"
         error_code: "403"
@@ -20,7 +20,23 @@ distributions:
         response_page_path: "/index.html"
 
 response_headers_policies:
-  - name: "NoStoreResponseHeader"
+  - name: "NoStoreResponseHeaderWithCORS"
+    cors_config:
+      access_control_allow_credentials: false
+      access_control_allow_headers:
+        - "*"
+      access_control_allow_methods:
+        - "DELETE"
+        - "GET"
+        - "HEAD"
+        - "OPTIONS"
+        - "PATCH"
+        - "POST"
+        - "PUT"
+      access_control_allow_origins:
+        - "http://127.0.0.1:3000"
+      access_control_max_age_sec: 31536000
+      origin_override: true
     custom_headers_configs:
       - header: "Cache-Control"
         override: true

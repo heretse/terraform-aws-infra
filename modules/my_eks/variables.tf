@@ -42,6 +42,11 @@ variable "endpoint_public_access" {
   description = "Endpoint Public Access of the EKS Cluster"
 }
 
+variable "security_group_ids" {
+  type        = list(any)
+  default     = []
+  description = "List of all the Security Group Id"
+}
 variable "public_subnets" {
   type        = list(any)
   description = "List of all the Public Subnets"
@@ -72,4 +77,10 @@ variable "fargate_profiles" {
   type        = list(any)
   description = "List of all the Fargate Profiles"
   default     = []
+}
+
+variable "oidc_provider_thumbprint_list" {
+  type        = list(any)
+  description = "List of all the OIDC Provider Thumbprints"
+  default     = null
 }

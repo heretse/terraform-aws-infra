@@ -29,7 +29,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "configurations" {
         expired_object_delete_marker = lookup(rule.value.expiration, "expired_object_delete_marker", null)
       }
 
-      status = (rule.value.enabled == "true") ? "Enabled" : "Disabled"
+      status = (lookup(rule.value, "enabled", false)) ? "Enabled" : "Disabled"
     }
   }
 

@@ -9,6 +9,30 @@ resource "aws_cloudfront_response_headers_policy" "policies" {
 
   name = each.value.name
 
+  dynamic "cors_config" {
+    for_each = lookup(each.value, "cors_config", null) != null ? [each.value.cors_config] : []
+
+    content {
+      access_control_allow_credentials = lookup(cors_config.value, "access_control_allow_credentials", true)
+
+      access_control_allow_headers {
+        items = lookup(cors_config.value, "access_control_allow_headers", [])
+      }
+
+      access_control_allow_methods {
+        items = lookup(cors_config.value, "access_control_allow_methods", [])
+      }
+
+      access_control_allow_origins {
+        items = lookup(cors_config.value, "access_control_allow_origins", [])
+      }
+
+      access_control_max_age_sec = lookup(cors_config.value, "access_control_max_age_sec", 31536000)
+
+      origin_override = lookup(cors_config.value, "origin_override", true)
+    }
+  }
+
   dynamic "custom_headers_config" {
     for_each = lookup(each.value, "custom_headers_configs", null) != null ? [1] : []
 

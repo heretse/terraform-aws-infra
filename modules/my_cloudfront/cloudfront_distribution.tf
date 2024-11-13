@@ -36,7 +36,7 @@ resource "aws_cloudfront_distribution" "distributions" {
     max_ttl                    = "0"
     min_ttl                    = "0"
     smooth_streaming           = "false"
-    target_origin_id           = "S3-${format("%s%s", each.value.bucket_name, each.value.origin_path)}"
+    target_origin_id           = lookup(each.value, "target_origin_id", "S3-${format("%s%s", each.value.bucket_name, each.value.origin_path)}")
     viewer_protocol_policy     = lookup(each.value, "viewer_protocol_policy", "redirect-to-https")
     response_headers_policy_id = (each.value.response_headers_policy != "") ? aws_cloudfront_response_headers_policy.policies["${each.value.response_headers_policy}"].id : null
 
@@ -72,12 +72,22 @@ resource "aws_cloudfront_distribution" "distributions" {
       cached_methods  = ordered_cache_behavior.value["cached_methods"]
       cache_policy_id = ordered_cache_behavior.value["cache_policy_id"]
 
-      compress               = true
-      default_ttl            = 0
+      compress    = true
+      default_ttl = 0
+
+      dynamic "lambda_function_association" {
+        for_each = lookup(ordered_cache_behavior.value, "lambda_function_association", null) == null ? [] : [ordered_cache_behavior.value["lambda_function_association"]]
+        content {
+          event_type   = lambda_function_association.value["event_type"]
+          include_body = lambda_function_association.value["include_body"]
+          lambda_arn   = lambda_function_association.value["lambda_arn"]
+        }
+      }
+
       max_ttl                = 0
       min_ttl                = 0
       smooth_streaming       = false
-      target_origin_id       = "S3-${each.value.bucket_name}"
+      target_origin_id       = lookup(ordered_cache_behavior.value, "target_origin_id", "S3-${each.value.bucket_name}")
       trusted_key_groups     = []
       trusted_signers        = []
       viewer_protocol_policy = "redirect-to-https"
